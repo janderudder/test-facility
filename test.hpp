@@ -26,9 +26,14 @@
 #include <string_view>
 
 // Assertion macro to use as tests
-#define ENSURE(cond, reason) ::test::detail::ensure__(  \
-    (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
-    (__FILE__), (__LINE__))
+#define ENSURE(cond, reason) (::test::detail::ensure__( \
+        (cond),                                         \
+        (#cond),                                        \
+        (reason),                                       \
+        (__PRETTY_FUNCTION__),                          \
+        (__FILE__),                                     \
+        (__LINE__)                                      \
+    ))
 
 
 namespace test::detail
@@ -44,17 +49,22 @@ struct Test_Failure : public std::runtime_error
 
 
 // Macro ENSURE expands to this
-inline void ensure__(bool condition, const char* cond_str,
-    const char* reason, const char* func, const char* file, int line)
+inline void ensure__(
+    bool                condition,
+    std::string_view    cond_str,
+    std::string_view    reason,
+    std::string_view    func,
+    std::string_view    file,
+    int                 line    )
 {
     if (!condition)
     {
         throw Test_Failure(
             "test failed for condition:\n`"
             + std::string{cond_str}
-            + "`\nreason: \"" + reason
-            + "\"\nin: `" + func
-            + "`\nat " + file + ":" + std::to_string(line)
+            + "`\nreason: \"" + reason.data()
+            + "\"\nin: `" + func.data()
+            + "`\nat " + file.data() + ":" + std::to_string(line)
             + "\n"
         );
     }

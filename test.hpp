@@ -14,7 +14,7 @@
  *  8 elements, in which case you'll get the following message on stdout:
  *  ```
  *      test failed for condition:
- *      `array.size() == 8`
+ *      `array.size() == 1`
  *      reason: "array size must be 1"
  *      in: `void test_array()`
  *      at ./example.cpp:3

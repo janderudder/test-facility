@@ -15,7 +15,7 @@ These tests could fail for instance if `new Array(8)` produces an array of
 
 ```
 test failed for condition:
-`array.size() == 8`
+`array.size() == 1`
 reason: "array size must be 1"
 in: `void test_array()`
 at ./example.cpp:3

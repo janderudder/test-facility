@@ -4,7 +4,7 @@
  *  Usage example:
  *  ```
  *      void test_array() {
- *          auto *array = new Array(8);
+ *          auto array = Array(8);
  *          ENSURE(array.size() == 1, "array size must be 1");
  *          ENSURE(array[0] == 8, "array[0] must be 8");
  *      }

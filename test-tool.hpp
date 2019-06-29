@@ -33,7 +33,7 @@ struct Test_Driver
     ~Test_Driver()
     {
         std::cout
-            << "\nEnd of " << (tests_failed + tests_passed) << " tests:\n"
+            << "\nEnd of "  << (tests_failed + tests_passed) << " tests:\n"
             << "  passed: " << tests_passed << "\n"
             << "  failed: " << tests_failed << "\n";
         tests_passed = 0;

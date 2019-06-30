@@ -63,7 +63,7 @@ struct Test_Driver
             << "test FAILED: " << reason << "\n"
             << "  (" << cond_str << ")\n"
             << "in " << file << ":" << std::to_string(line) << "\n"
-            << "     " << func << "\n"
+            << "   " << func << "\n"
         ;
     }
 

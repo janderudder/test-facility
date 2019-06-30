@@ -32,31 +32,43 @@ constexpr Ret invoke(FnPtr<Ret, Args...> fnptr, Args&&... args)
 
 //* Constant member function, this constant pointer
 template <typename T, typename Ret, typename... Args>
-constexpr Ret invoke(MemFnptrConst<T,Ret,Args...> mem_fnptr, T const* instance, Args&&... args)
-{
+constexpr Ret invoke(
+    MemFnptrConst<T,Ret,Args...> mem_fnptr,
+    T const* instance,
+    Args&&... args
+){
     return ((instance)->*(mem_fnptr))(std::forward<Args>(args)...);
 }
 
 
 //* Constant member function, *this constant reference
 template <typename T, typename Ret, typename... Args>
-constexpr Ret invoke(MemFnptrConst<T,Ret,Args...> mem_fnptr, T const& instance, Args&&... args)
-{
+constexpr Ret invoke(
+    MemFnptrConst<T,Ret,Args...> mem_fnptr,
+    T const& instance,
+    Args&&... args
+){
     return ((instance).*(mem_fnptr))(std::forward<Args>(args)...);
 }
 
 
 //* Member function, this pointer
 template <typename T, typename Ret, typename... Args>
-constexpr Ret invoke(MemFnptr<T,Ret,Args...> mem_fnptr, T* instance, Args&&... args)
-{
+constexpr Ret invoke(
+    MemFnptr<T,Ret,Args...> mem_fnptr,
+    T* instance,
+    Args&&... args
+){
     return ((instance)->*(mem_fnptr))(std::forward<Args>(args)...);
 }
 
 
 //* Member function, *this reference
 template <typename T, typename Ret, typename... Args>
-constexpr Ret invoke(MemFnptr<T,Ret,Args...> mem_fnptr, T& instance, Args&&... args)
-{
+constexpr Ret invoke(
+    MemFnptr<T,Ret,Args...> mem_fnptr,
+    T& instance,
+    Args&&... args
+){
     return ((instance).*(mem_fnptr))(std::forward<Args>(args)...);
 }

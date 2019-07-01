@@ -1,10 +1,7 @@
 #pragma once
 #include <iostream>
-#include <stdexcept>
 #include <string>
 #include <string_view>
-
-
 
 /**
  *  Public interface,
@@ -15,27 +12,24 @@
     (__FILE__), (__LINE__))
 
 
-
 /**
  *  Impl.
  */
 namespace test::impl
 {
 
-/*  This is used as an object to take advantage of static initialization
-    and output text at program exit.  */
-struct Test_Driver
+//* Helper class tasked with outputting text and counting
+struct Statistics
 {
     static inline auto tests_passed = 0ULL;
     static inline auto tests_failed = 0ULL;
 
-
-    ~Test_Driver()
+    ~Statistics()
     {
         std::cout
-            << "\nEnd of "  << (tests_failed + tests_passed) << " tests:\n"
-            << "  passed: " << tests_passed << "\n"
-            << "  failed: " << tests_failed << "\n";
+            << "\nEnd of " << (tests_failed + tests_passed) << " tests\n"
+            << "    passed: " << tests_passed << "\n"
+            << "    failed: " << tests_failed << "\n";
         tests_passed = 0;
         tests_failed = 0;
     }
@@ -63,16 +57,18 @@ struct Test_Driver
             << "test FAILED: " << reason << "\n"
             << "  (" << cond_str << ")\n"
             << "in " << file << ":" << std::to_string(line) << "\n"
-            << "   " << func << "\n"
+            << "     " << func << "\n"
         ;
     }
 
 };
 
-static Test_Driver td;
+
+//* Unique instance of our helper
+inline Statistics td;
 
 
-// Macro ENSURE expands to this
+//* The ENSURE macro expands to that
 inline void ensure(bool condition, const char* cond_str,
     const char* reason, const char* func, const char* file, int line)
 {

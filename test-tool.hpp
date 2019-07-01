@@ -73,7 +73,7 @@ static Test_Driver td;
 
 
 // Macro ENSURE expands to this
-void ensure(bool condition, const char* cond_str,
+inline void ensure(bool condition, const char* cond_str,
     const char* reason, const char* func, const char* file, int line)
 {
     if (condition)

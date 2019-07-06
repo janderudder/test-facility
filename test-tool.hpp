@@ -23,6 +23,7 @@ struct Statistics
 {
     static inline auto tests_passed = 0ULL;
     static inline auto tests_failed = 0ULL;
+    static inline bool fail_mode    = false;
 
     ~Statistics()
     {
@@ -39,6 +40,7 @@ struct Statistics
     void pass(const char* reason) const noexcept
     {
         tests_passed++;
+        fail_mode = false;
         std::cout << "test passed: " << reason  << "\n";
     }
 
@@ -53,12 +55,16 @@ struct Statistics
     {
         tests_failed++;
 
+        if (!fail_mode) {
+            fail_mode = true;
+            std::cout << "\n";
+        }
+
         std::cout
-            << "\n"
             << "test FAILED: " << reason << "\n"
             << "  (" << cond_str << ")\n"
             << "in " << file << ":" << std::to_string(line) << "\n"
-            << "     " << func << "\n"
+            << "     " << func << "\n\n"
         ;
     }
 

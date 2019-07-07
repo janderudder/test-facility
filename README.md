@@ -1,10 +1,25 @@
 ## Minimalist test facility.
 
-The sole feature provided by this piece of code is the following macro:
-```cpp
-ENSURE(condition, rationale)
-```
+
+#### ENSURE
+
+The first feature provided by this module is an assertion.
 Its purpose is to express intent and obtain feedback about the behaviour of the code.
+
+```cpp
+ENSURE(condition, rationale);
+```
+
+
+#### THEN_ENSURE
+
+The second (and for now last) feature is the same kind of assertion, but it gets
+evaluated only if the previous test succeeded, allowing to build chains of conditional tests.
+
+```cpp
+ENSURE(true, "")
+  .THEN_ENSURE(condition, rationale);
+```
 
 
 ### Compilation

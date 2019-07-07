@@ -7,9 +7,21 @@
  *  Public interface,
  *  assertion-like macro.
  */
-#define ENSURE(cond, reason) ::test::impl::ensure(  \
-    (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
-    (__FILE__), (__LINE__))
+#define ENSURE(cond, reason)                                \
+    ::test::impl::ensure(                                   \
+        (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
+        (__FILE__), (__LINE__))
+
+
+
+/**
+ *  Test asserted only if previous test succeeded
+ */
+#define THEN_ENSURE(cond, reason)                           \
+    then(::test::impl::make_test((cond), (#cond), (reason), \
+            (__PRETTY_FUNCTION__), (__FILE__),              \
+            (__LINE__)))
+
 
 
 /**
@@ -17,7 +29,6 @@
  */
 namespace test::impl
 {
-
 //* Helper class tasked with outputting text and counting
 struct Statistics
 {
@@ -71,19 +82,85 @@ struct Statistics
 };
 
 
-//* Unique instance of our helper
-inline Statistics td;
+
+//* Unique instance of our statistics helper
+inline Statistics statistics;
+
+
+
+struct Test
+{
+    const bool      condition       = false;
+    const char*     cond_str;
+    const char*     reason;
+    const char*     func;
+    const char*     file;
+    const int       line            = 0;
+
+
+
+    Test() = default;
+
+
+    constexpr Test(
+        bool        condition_,
+        const char* cond_str_,
+        const char* reason_,
+        const char* func_,
+        const char* file_,
+        int         line_
+    ) noexcept
+        : condition {condition_}
+        , cond_str  {cond_str_}
+        , reason    {reason_}
+        , func      {func_}
+        , file      {file_}
+        , line      {line_}
+    {
+    }
+
+
+
+    Test const& operator()() const
+    {
+        if (condition)
+            statistics.pass(reason);
+
+        else
+            statistics.fail(cond_str, reason, func, file, line);
+
+        return *this;
+    }
+
+
+
+    Test then(Test&& test) const
+    {
+        if (condition)
+            return test();
+
+        else return Test{};
+    }
+
+};
+
 
 
 //* The ENSURE macro expands to that
-inline void ensure(bool condition, const char* cond_str,
+inline Test ensure(bool condition, const char* cond_str,
     const char* reason, const char* func, const char* file, int line)
 {
-    if (condition)
-        td.pass(reason);
-    else
-        td.fail(cond_str, reason, func, file, line);
+    return Test{condition, cond_str, reason, func, file, line}();
 }
+
+
+//* Create a test but don't execute it (used in THEN_ENSURE macro)
+inline Test make_test(bool condition, const char* cond_str,
+    const char* reason, const char* func, const char* file, int line)
+{
+    return Test{condition, cond_str, reason, func, file, line};
+}
+
 
 
 } // namespace test::impl

@@ -1,25 +1,26 @@
-## Minimalist test facility.
+## Minimalist test module
 
-
-#### ENSURE
-
-The first feature provided by this module is an assertion.
-Its purpose is to express intent and obtain feedback about the behaviour of the code.
+The sole feature provided by this module is the an assertion.
 
 ```cpp
 ENSURE(condition, rationale);
 ```
 
+Its purpose is to express intent and obtain feedback about the behaviour of
+the code.
 
-#### THEN_ENSURE
+One difference with classic `assert` is that it will not kill the program on
+first error, and give useful feedback.
 
-The second (and for now last) feature is the same kind of assertion, but it gets
-evaluated only if the previous test succeeded, allowing to build chains of conditional tests.
+The second difference is that you can short-circuit these assertions.
+In the following example, the second assertion is evaluated only if the first
+test succeeds:
 
 ```cpp
-ENSURE(true, "")
-  .THEN_ENSURE(condition, rationale);
+ENSURE(cond1, "message1") && ENSURE(cond2, "message2");
 ```
+
+Another difference is that a line will be output for each successful test.
 
 
 ### Compilation
@@ -39,7 +40,7 @@ void test_array()
 {
     auto array = Array(8);
     ENSURE(array.size() == 1, "array size must be 1");
-    ENSURE(array[0] == 8, "array[0] must be 8");
+    && ENSURE(array[0] == 8, "array[0] must be 8");   // short-circuit to avoid out-of-bound check
 }
 ```
 

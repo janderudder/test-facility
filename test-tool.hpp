@@ -15,16 +15,6 @@
 
 
 /**
- *  Test asserted only if previous test succeeded
- */
-#define THEN_ENSURE(cond, reason)                           \
-    then(::test::impl::make_test((cond), (#cond), (reason), \
-            (__PRETTY_FUNCTION__), (__FILE__),              \
-            (__LINE__)))
-
-
-
-/**
  *  Impl.
  */
 namespace test::impl
@@ -61,7 +51,7 @@ struct Statistics
         const char* reason,
         const char* func,
         const char* file,
-        int         line
+        const int   line
     )const noexcept
     {
         tests_failed++;
@@ -108,7 +98,7 @@ struct Test
         const char* reason_,
         const char* func_,
         const char* file_,
-        int         line_
+        const int   line_
     ) noexcept
         : condition {condition_}
         , cond_str  {cond_str_}
@@ -117,6 +107,13 @@ struct Test
         , file      {file_}
         , line      {line_}
     {
+    }
+
+
+
+    operator bool() const noexcept
+    {
+        return condition;
     }
 
 
@@ -151,14 +148,6 @@ inline Test ensure(bool condition, const char* cond_str,
     const char* reason, const char* func, const char* file, int line)
 {
     return Test{condition, cond_str, reason, func, file, line}();
-}
-
-
-//* Create a test but don't execute it (used in THEN_ENSURE macro)
-inline Test make_test(bool condition, const char* cond_str,
-    const char* reason, const char* func, const char* file, int line)
-{
-    return Test{condition, cond_str, reason, func, file, line};
 }
 
 

@@ -1,37 +1,44 @@
 ## Minimalist test module
 
-The sole feature provided by this module is the an assertion.
+The sole feature provided by this module is the `ENSURE` assertion:
 
 ```cpp
 ENSURE(condition, rationale);
 ```
 
-Its purpose is to express intent and obtain feedback about the behaviour of
-the code.
+Its purpose is to express intent and obtain feedback about the run-time
+behaviour of the code.
 
-One difference with classic `assert` is that it will not kill the program on
-first error, and give useful feedback.
+A notable difference with the classic `assert` is that it will **not** terminate
+the program when evaluating to false. Instead it will output useful feedback.
 
-The second difference is that you can short-circuit these assertions.
-In the following example, the second assertion is evaluated only if the first
-test succeeds:
+Another difference resides in the ability for this assertions to be
+short-circuited.
+In the following example, the second condition is evaluated only if the first
+one is verified:
 
 ```cpp
-ENSURE(cond1, "message1") && ENSURE(cond2, "message2");
+ENSURE(condition1, "message1") && ENSURE(condition2, "message2");
 ```
 
-Another difference is that a line will be output for each successful test.
+An output is generated for successful tests too.
 
 
 ### Compilation
 
-Just include the following files in your project:
+To use this module, please include the following files in your project:
 ```
 util/invoke.hpp
 test-tool.hpp
 ```
-Needs at least C++17 because of static inline variables (easily portable to C++11).
 
+Compatibility notes:
+
+This project needs at least C++17 because of static inline variables.
+Porting to C++11 would just require defining those few variables in a source file.
+
+You may get rid of the custom "invoke.hpp" and replace it by the standard
+`<functional>` header. Just update the inclusion in `test-tool.hpp`.
 
 ### Usage example:
 
@@ -44,12 +51,18 @@ void test_array()
 }
 ```
 
-These tests could fail for instance if `new Array(8)` produces an array of
-8 elements, in which case you'll get the following message on `stdout`:
+These tests could fail for instance if the constructor `Array(8)` produces an
+array of 8 elements, in which case you'll get the following message on `stdout`:
 
 ```
 test FAILED: array size must be 1
   (array.size() == 1)
 in ./main.cpp:42
-   void test_array()
+     void test_array()
+```
+
+Otherwise, when the tests succeed, this is the program output:
+```
+test passed: array size must be 1
+test passed: array[0] must be 8
 ```

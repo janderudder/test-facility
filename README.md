@@ -9,7 +9,7 @@ ENSURE(condition, rationale);
 Its purpose is to express intent and obtain feedback about the run-time
 behaviour of the code.
 
-A notable difference with the classic `assert` is that it will **not** terminate
+A notable difference with the classic `assert` is that it will not terminate
 the program when evaluating to false. Instead it will output useful feedback.
 
 Another difference resides in the ability for this assertions to be

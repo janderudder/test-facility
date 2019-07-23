@@ -46,7 +46,7 @@ You may get rid of the custom "invoke.hpp" and replace it by the standard
 void test_array()
 {
     auto array = Array(8);
-    ENSURE(array.size() == 1, "array size must be 1");
+    ENSURE(array.size() == 1, "array size must be 1")
     && ENSURE(array[0] == 8, "array[0] must be 8");   // short-circuit to avoid out-of-bound check
 }
 ```

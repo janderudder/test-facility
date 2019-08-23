@@ -1,4 +1,5 @@
 #pragma once
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <string_view>
@@ -8,7 +9,7 @@
  *  assertion-like macro.
  */
 #define ENSURE(cond, reason)                                \
-    ::test::impl::ensure(                                   \
+    ::test_tool_impl::ensure(                               \
         (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
         (__FILE__), (__LINE__))
 
@@ -17,9 +18,9 @@
 /**
  *  Impl.
  */
-namespace test::impl
+namespace test_tool_impl
 {
-//* Helper class tasked with outputting text and counting
+//* Helper class tasked with outputting text and statistics
 struct Statistics
 {
     static inline auto tests_passed = 0ULL;
@@ -29,43 +30,44 @@ struct Statistics
     ~Statistics()
     {
         std::cout
-            << "\n"
-            << "Tests total: " << (tests_failed + tests_passed) << "\n"
-            << "     passed: " << tests_passed << "\n"
-            << "     failed: " << tests_failed << "\n";
+            << "\n--Tests--\n"
+            << " passed: " << std::setw(5) << std::right << tests_passed << "\n"
+            << " failed: " << std::setw(5) << std::right << tests_failed << "\n"
+            << " total:  " << std::setw(5) << std::right << (tests_failed + tests_passed) << "\n"
+            ;
         tests_passed = 0;
         tests_failed = 0;
     }
 
 
-    void pass(const char* reason) const noexcept
+    void pass(std::string_view reason) const noexcept
     {
         tests_passed++;
         fail_mode = false;
-        std::cout << "test passed: " << reason  << "\n";
+        std::cout << "test passed: " << reason.data()  << "\n";
     }
 
 
     void fail(
-        const char* cond_str,
-        const char* reason,
-        const char* func,
-        const char* file,
-        const int   line
+        std::string_view    cond_str,
+        std::string_view    reason,
+        std::string_view    func,
+        std::string_view    file,
+        const int           line
     )const noexcept
     {
         tests_failed++;
 
-        if (!fail_mode) {
-            fail_mode = true;
-            std::cout << "\n";
-        }
+        // if (!fail_mode) {        // WIP
+        //     fail_mode = true;
+        //     std::cout << "\n";
+        // }
 
         std::cout
-            << "test FAILED: " << reason << "\n"
-            << "  (" << cond_str << ")\n"
-            << "in " << file << ":" << std::to_string(line) << "\n"
-            << "     " << func << "\n\n"
+            << "test FAILED: " << reason.data() << "\n"
+            << "condition:   " << cond_str.data() << "\n"
+            << "in file:     " << file.data() << ":" << std::to_string(line) << "\n"
+            << "@ function:  " << func.data() << "\n"
         ;
     }
 
@@ -120,11 +122,14 @@ struct Test
 
     Test const& operator()() const
     {
+        std::cout << "\n";
+
         if (condition)
             statistics.pass(reason);
 
-        else
+        else {
             statistics.fail(cond_str, reason, func, file, line);
+        }
 
         return *this;
     }
@@ -144,12 +149,24 @@ struct Test
 
 
 //* The ENSURE macro expands to that
-inline Test ensure(bool condition, const char* cond_str,
-    const char* reason, const char* func, const char* file, int line)
-{
-    return Test{condition, cond_str, reason, func, file, line}();
+inline Test ensure(
+    bool                condition,
+    std::string_view    cond_str,
+    std::string_view    reason,
+    std::string_view    func,
+    std::string_view    file,
+    int                 line
+){
+    return Test {
+        condition,
+        cond_str.data(),
+        reason.data(),
+        func.data(),
+        file.data(),
+        line
+    }();
 }
 
 
 
-} // namespace test::impl
+} // namespace test_tool_impl

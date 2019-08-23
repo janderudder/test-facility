@@ -22,6 +22,8 @@ ENSURE(condition1, "message1") && ENSURE(condition2, "message2");
 ```
 
 An output is generated for successful tests too.
+Test count is also printed at the end of the program.
+All output happens on stdout.
 
 
 ### Compilation
@@ -34,7 +36,7 @@ test-tool.hpp
 
 Compatibility notes:
 
-This project needs at least C++17 because of static inline variables.
+This project needs at least C++17 because it uses static inline variables.
 Porting to C++11 would just require defining those few variables in a source file.
 
 You may get rid of the custom "invoke.hpp" and replace it by the standard
@@ -42,27 +44,36 @@ You may get rid of the custom "invoke.hpp" and replace it by the standard
 
 ### Usage example:
 
+You may compile and run file `example.cpp`.
+
 ```
 void test_array()
 {
     auto array = Array(8);
-    ENSURE(array.size() == 1, "array size must be 1")
-    && ENSURE(array[0] == 8, "array[0] must be 8");   // short-circuit to avoid out-of-bound check
+    ENSURE(array.size() == 8, "array size must be 8")
+    // short-circuit to avoid out-of-bound check
+    && ENSURE(array[0] == 0, "array[0] must be 0 initialized");
 }
 ```
 
 These tests could fail for instance if the constructor `Array(8)` produces an
-array of 8 elements, in which case you'll get the following message on `stdout`:
+array of 1 element, in which case you'll on `stdout` a message like the
+following:
 
 ```
-test FAILED: array size must be 1
-  (array.size() == 1)
-in ./main.cpp:42
-     void test_array()
+test FAILED: array size must be 8
+condition:   array.size() == n
+in file:     ./example.cpp:62
+@ function:  void test_array(const Int_array_base&, int)
 ```
 
-Otherwise, when the tests succeed, this is the program output:
+Otherwise if the tests succeed, this is the program output:
 ```
-test passed: array size must be 1
-test passed: array[0] must be 8
+test passed: array size must be 8
+test passed: array[0] must be 0 initialized
+
+--Tests--
+ passed:     2
+ failed:     0
+ total:      2
 ```

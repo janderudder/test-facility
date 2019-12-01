@@ -23,26 +23,29 @@ namespace test_tool_impl
 //* Helper class tasked with outputting text and statistics
 struct Statistics
 {
-    static inline auto tests_passed = 0ULL;
-    static inline auto tests_failed = 0ULL;
-    static inline bool fail_mode    = false;
+    static inline unsigned long long    tests_passed = 0;
+    static inline unsigned long long    tests_failed = 0;
+    static inline bool                  fail_mode    = false;
 
     ~Statistics()
     {
         std::cout
-            << "\n--Tests--\n"
-            << " passed: " << std::setw(5) << std::right << tests_passed << "\n"
-            << " failed: " << std::setw(5) << std::right << tests_failed << "\n"
-            << " total:  " << std::setw(5) << std::right << (tests_failed + tests_passed) << "\n"
+            << "\n  Total tests: " << (tests_failed + tests_passed) << "\n"
+            << std::setfill('-') << std::setw(19) << "\n"
             ;
-        tests_passed = 0;
-        tests_failed = 0;
+        std::cout
+            << std::setfill(' ')
+            << "  failed: " << std::setw(7) << std::right << tests_failed << "\n"
+            << "  passed: " << std::setw(7) << std::right << tests_passed << "\n"
+            ;
+        tests_passed = tests_failed = 0;
     }
 
 
     void pass(std::string_view reason) const noexcept
     {
-        tests_passed++;
+        ++tests_passed;
+        if (fail_mode) {std::cout << "\n";}
         fail_mode = false;
         std::cout << "test passed: " << reason.data()  << "\n";
     }
@@ -56,15 +59,10 @@ struct Statistics
         const int           line
     )const noexcept
     {
-        tests_failed++;
-
-        // if (!fail_mode) {        // WIP
-        //     fail_mode = true;
-        //     std::cout << "\n";
-        // }
-
+        ++tests_failed;
+        fail_mode = true;
         std::cout
-            << "test FAILED: " << reason.data() << "\n"
+            << "\ntest FAILED: " << reason.data() << "\n"
             << "condition:   " << cond_str.data() << "\n"
             << "in file:     " << file.data() << ":" << std::to_string(line) << "\n"
             << "@ function:  " << func.data() << "\n"
@@ -122,8 +120,6 @@ struct Test
 
     Test const& operator()() const
     {
-        std::cout << "\n";
-
         if (condition)
             statistics.pass(reason);
 

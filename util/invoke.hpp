@@ -22,7 +22,7 @@ using MemFnptr = Ret (T::*)(Args...);
 
 
 //* invoke implementation
-//* Normal function
+//* Free function
 template <typename Ret, typename... Args>
 constexpr Ret invoke(FnPtr<Ret, Args...> fnptr, Args&&... args)
 {
@@ -30,7 +30,7 @@ constexpr Ret invoke(FnPtr<Ret, Args...> fnptr, Args&&... args)
 }
 
 
-//* Constant member function, this constant pointer
+//* Constant member function, instance as constant pointer
 template <typename T, typename Ret, typename... Args>
 constexpr Ret invoke(
     MemFnptrConst<T,Ret,Args...>    mem_fnptr,
@@ -41,7 +41,7 @@ constexpr Ret invoke(
 }
 
 
-//* Constant member function, *this constant reference
+//* Constant member function, instance as constant reference
 template <typename T, typename Ret, typename... Args>
 constexpr Ret invoke(
     MemFnptrConst<T,Ret,Args...>    mem_fnptr,
@@ -52,7 +52,7 @@ constexpr Ret invoke(
 }
 
 
-//* Member function, this pointer
+//* Member function, instance as mutable pointer
 template <typename T, typename Ret, typename... Args>
 constexpr Ret invoke(
     MemFnptr<T,Ret,Args...> mem_fnptr,
@@ -63,7 +63,7 @@ constexpr Ret invoke(
 }
 
 
-//* Member function, *this reference
+//* Member function, instance as mutable reference
 template <typename T, typename Ret, typename... Args>
 constexpr Ret invoke(
     MemFnptr<T,Ret,Args...> mem_fnptr,

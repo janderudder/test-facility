@@ -59,8 +59,8 @@ struct Bad_int_array    : public Int_array_base
  */
 void test_array(Int_array_base const& array, int n)
 {
-    ENSURE(array.size() == n, "array size must be " + std::to_string(n))
-        && ENSURE(array[0] == 0, "array[0] must be 0");
+    EXPECT(array.size() == n, "array size must be " + std::to_string(n))
+        && EXPECT(array[0] == 0, "array[0] must be 0");
 }
 
 
@@ -76,16 +76,16 @@ int main()
     test_array(bad_array, n);
 
     // other examples
-    ENSURE(true, "this passes");
-    ENSURE(false, "this fails");
+    EXPECT(true, "this passes");
+    EXPECT(false, "this fails");
 
     // short-circuiting
-    ENSURE(true, "doesn't fail")
-        && ENSURE(false, "exec and fail")
-        && ENSURE(true, "since previous failed, doesn't exec");
+    EXPECT(true, "doesn't fail")
+        && EXPECT(false, "exec and fail")
+        && EXPECT(true, "since previous failed, doesn't exec");
 
-    ENSURE(true, "doesn't fail")
-        || ENSURE(false, "doesn't fail")
-        || ENSURE(true, "exec");
+    EXPECT(true, "doesn't fail")
+        || EXPECT(false, "doesn't fail")
+        || EXPECT(true, "exec");
 
 }

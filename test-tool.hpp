@@ -8,8 +8,8 @@
  *  Public interface,
  *  assertion-like macro.
  */
-#define ENSURE(cond, reason)                                \
-    ::test_tool_impl::ensure(                               \
+#define EXPECT(cond, reason)                                \
+    ::test_tool_impl::m4_api_expect(                        \
         (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
         (__FILE__), (__LINE__))
 
@@ -31,7 +31,7 @@ struct Statistics
     {
         std::cout
             << "\n  Total tests: " << (tests_failed + tests_passed) << "\n"
-            << std::setfill('-') << std::setw(19) << "\n"
+            << std::setfill('-') << " " << std::setw(18) << "\n"
             ;
         std::cout
             << std::setfill(' ')
@@ -111,7 +111,7 @@ struct Test
 
 
 
-    operator bool() const noexcept
+    constexpr operator bool() const noexcept
     {
         return condition;
     }
@@ -140,12 +140,14 @@ struct Test
         else return Test{};
     }
 
+
 };
 
 
 
-//* The ENSURE macro expands to that
-inline Test ensure(
+
+//* The EXPECT macro expands to that
+inline Test m4_api_expect(
     bool                condition,
     std::string_view    cond_str,
     std::string_view    reason,
@@ -165,4 +167,4 @@ inline Test ensure(
 
 
 
-} // namespace test_tool_impl
+} // ::test_tool_impl::

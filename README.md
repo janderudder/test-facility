@@ -21,11 +21,13 @@ one is verified:
 EXPECT(condition1, "message1") && EXPECT(condition2, "message2");
 ```
 
-#### Other features:
+#### Features
 
-An output is generated for successful tests too.
-Test count is printed at the end of the program.
-All output happens on `stdout`.
+- EXPECT macro, combines logically
+- Output for each successful tests
+- Detailed output for failed tests
+- Test count output at the end of the program
+- Output happens on `stdout`
 
 
 ### Compilation
@@ -35,7 +37,7 @@ To use this module, please include the following file in your project:
 test-tool.hpp
 ```
 
-#### Compatibility notes:
+#### Compatibility notes
 
 This project needs at least C++17 because it uses static inline variables in
 order to keep the source code in the header.
@@ -43,7 +45,7 @@ Porting to C++11 would only require defining those few variables in a source
 file.
 
 
-### Usage example:
+### Usage example
 
 You may compile and run the file `example.cpp`.
 

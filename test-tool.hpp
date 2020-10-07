@@ -4,21 +4,22 @@
 #include <string>
 #include <string_view>
 
-/**
- *  Public interface,
- *  assertion-like macro.
- */
+
+// Public interface
+// Assertion-like macro.
+////////////////////////////////////////////////////////////////////////////////
 #define EXPECT(cond, reason)                                \
-    ::test_tool_impl::m4_api_expect(                        \
+    ::test_tool::impl::m4_api_expect(                       \
         (cond), (#cond), (reason), (__PRETTY_FUNCTION__),   \
         (__FILE__), (__LINE__))
 
 
 
-/**
- *  Impl.
- */
-namespace test_tool_impl
+
+
+// implementation
+////////////////////////////////////////////////////////////////////////////////
+namespace test_tool::impl
 {
 //* Helper class tasked with outputting text and statistics
 struct Statistics
@@ -30,14 +31,26 @@ struct Statistics
     ~Statistics()
     {
         std::cout
-            << "\n  Total tests: " << (tests_failed + tests_passed) << "\n"
-            << std::setfill('-') << " " << std::setw(18) << "\n"
-            ;
-        std::cout
+            << "\n"
+            << std::right
             << std::setfill(' ')
-            << "  failed: " << std::setw(7) << std::right << tests_failed << "\n"
-            << "  passed: " << std::setw(7) << std::right << tests_passed << "\n"
-            ;
+            << std::setw(7) << "Tests"
+            << std::setw(3) << "|"
+            << std::setw(7) << (tests_failed + tests_passed)
+            << "\n";
+
+        std::cout << std::right << std::setw(20) << std::setfill('-') << "\n";
+
+        std::cout
+            << std::right
+            << std::setfill(' ')
+            << std::setw(7) << "Failed"
+            << std::setw(3) << "|"
+            << std::setw(7) << tests_failed << "\n"
+            << std::setw(7) << "Passed"
+            << std::setw(3) << "|"
+            << std::setw(7) << tests_passed << "\n";
+
         tests_passed = tests_failed = 0;
     }
 
@@ -47,7 +60,7 @@ struct Statistics
         ++tests_passed;
         if (fail_mode) {std::cout << "\n";}
         fail_mode = false;
-        std::cout << "test passed: " << reason.data()  << "\n";
+        std::cout << "test passed: \"" << reason.data()  << "\"\n";
     }
 
 
@@ -61,11 +74,14 @@ struct Statistics
     {
         ++tests_failed;
         fail_mode = true;
-        std::cout
-            << "\ntest FAILED: " << reason.data() << "\n"
-            << "condition:   " << cond_str.data() << "\n"
-            << "in file:     " << file.data() << ":" << std::to_string(line) << "\n"
-            << "@ function:  " << func.data() << "\n"
+
+        std::cout << "\n";
+        std::cout << std::left
+            << std::setw(14) << "test FAILED" << "\"" << reason.data() << "\"\n"
+            << std::setw(14) << "condition"   << cond_str.data()       << "\n"
+            << std::setw(14) << "location"    << file.data()
+                             << ":"           << std::to_string(line)  << "\n"
+            << std::setw(14) << "function"    << func.data()           << "\n"
         ;
     }
 
@@ -167,4 +183,4 @@ inline Test m4_api_expect(
 
 
 
-} // ::test_tool_impl::
+} // test_tool::impl::

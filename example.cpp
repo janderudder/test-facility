@@ -81,11 +81,11 @@ int main()
 
     // short-circuiting
     EXPECT(true, "doesn't fail")
-        && EXPECT(false, "exec and fail")
-        && EXPECT(true, "since previous failed, doesn't exec");
+        && EXPECT(false, "tests and fails")
+        && EXPECT(true, "since previous failed, this one doesn't tests");
 
     EXPECT(true, "doesn't fail")
-        || EXPECT(false, "doesn't fail")
-        || EXPECT(true, "exec");
+        || EXPECT(false, "this fails")
+        || EXPECT(true, "but this tests anyway, because logical OR");
 
 }
